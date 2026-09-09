@@ -1,0 +1,158 @@
+[01_dice.html](https://github.com/user-attachments/files/31993097/01_dice.html)
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주사위 게임</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;color:#222}
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+.game{background:#fff;border-radius:24px;padding:24px;box-shadow:0 20px 50px #0004}
+h1{text-align:center;margin:0 0 8px;font-size:34px}
+.subtitle{text-align:center;color:#666;margin-bottom:20px}
+.turn{text-align:center;font-size:22px;font-weight:800;margin:15px 0}
+.board{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;background:#ddd;padding:6px;border-radius:16px}
+.cell{height:72px;background:#fafafa;border-radius:9px;position:relative;display:flex;align-items:center;justify-content:center;border:1px solid #ddd}
+.cell.start{background:#d1fae5}.cell.goal{background:#fde68a}
+.num{position:absolute;top:5px;left:7px;font-size:11px;color:#888}
+.pieces{display:flex;gap:2px;align-items:center;justify-content:center;margin-top:10px}
+.piece{font-size:25px;filter:drop-shadow(0 2px 2px #777)}
+.players{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0}
+.player{padding:9px 14px;border-radius:12px;color:#fff;font-weight:700}
+.p1{background:#ef4444}.p2{background:#3b82f6}.p3{background:#22c55e}.p4{background:#f59e0b}.p5{background:#a855f7}
+.panel{text-align:center}
+.dice{font-size:88px;height:110px;display:flex;align-items:center;justify-content:center}
+button{border:0;border-radius:14px;padding:14px 25px;font-size:18px;font-weight:800;cursor:pointer;margin:5px}
+#roll{background:#4f46e5;color:#fff}#reset{background:#e5e7eb}
+button:disabled{opacity:.45;cursor:not-allowed}
+.log{margin-top:15px;background:#f3f4f6;border-radius:14px;padding:12px;height:130px;overflow:auto;line-height:1.7}
+.win{font-size:27px;color:#16a34a}
+@media(max-width:700px){.wrap{padding:10px}.game{padding:14px}.board{grid-template-columns:repeat(5,1fr)}.cell{height:58px}h1{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="game">
+<h1>주사위 게임</h1>
+<div class="subtitle">5명이 함께 즐기는 주사위 경주</div>
+<div class="turn" id="turn">플레이어 1의 차례입니다!</div>
+<div class="board" id="board"></div>
+
+<div class="players">
+<div class="player p1">🔴 플레이어 1</div>
+<div class="player p2">🔵 플레이어 2</div>
+<div class="player p3">🟢 플레이어 3</div>
+<div class="player p4">🟠 플레이어 4</div>
+<div class="player p5">🟣 플레이어 5</div>
+</div>
+
+<div class="panel">
+<div class="dice" id="dice">⚀</div>
+<button id="roll" onclick="rollDice()">주사위 굴리기</button>
+<button id="reset" onclick="resetGame()">다시 시작</button>
+</div>
+<div class="log" id="log">게임을 시작하세요!</div>
+</div>
+</div>
+
+<script>
+"use strict";
+
+const names=["플레이어 1","플레이어 2","플레이어 3","플레이어 4","플레이어 5"];
+const icons=["🔴","🔵","🟢","🟠","🟣"];
+const faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+const goal=30;
+let pos=[0,0,0,0,0];
+let turn=0;
+let over=false;
+
+function makeBoard(){
+  const board=document.getElementById("board");
+  board.innerHTML="";
+  for(let i=0;i<=goal;i++){
+    const c=document.createElement("div");
+    c.className="cell"+(i===0?" start":"")+(i===goal?" goal":"");
+    c.id="cell"+i;
+    c.innerHTML='<span class="num">'+(i===0?"시작":i===goal?"골인":i)+'</span><div class="pieces"></div>';
+    board.appendChild(c);
+  }
+  draw();
+}
+
+function draw(){
+  document.querySelectorAll(".pieces").forEach(x=>x.innerHTML="");
+  pos.forEach((p,i)=>{
+    const box=document.querySelector("#cell"+p+" .pieces");
+    if(box){
+      const s=document.createElement("span");
+      s.className="piece";
+      s.textContent=icons[i];
+      s.title=names[i];
+      box.appendChild(s);
+    }
+  });
+}
+
+function log(text){
+  const l=document.getElementById("log");
+  const d=document.createElement("div");
+  d.textContent=text;
+  l.prepend(d);
+}
+
+function rollDice(){
+  if(over)return;
+  const btn=document.getElementById("roll");
+  btn.disabled=true;
+  const dice=document.getElementById("dice");
+  let n=0;
+  const timer=setInterval(()=>{
+    dice.textContent=faces[Math.floor(Math.random()*6)];
+    n++;
+    if(n>=10){
+      clearInterval(timer);
+      const value=Math.floor(Math.random()*6)+1;
+      dice.textContent=faces[value-1];
+      move(value);
+    }
+  },70);
+}
+
+function move(value){
+  const old=pos[turn];
+  pos[turn]=Math.min(goal,pos[turn]+value);
+  log(names[turn]+"이(가) "+value+"이 나와서 "+old+"칸에서 "+pos[turn]+"칸으로 이동했습니다.");
+  draw();
+
+  if(pos[turn]===goal){
+    over=true;
+    document.getElementById("turn").innerHTML='<span class="win">🏆 '+names[turn]+' 승리!</span>';
+    log("축하합니다! "+names[turn]+"이(가) 우승했습니다!");
+    return;
+  }
+
+  turn=(turn+1)%5;
+  document.getElementById("turn").textContent=names[turn]+"의 차례입니다!";
+  btnEnable();
+}
+
+function btnEnable(){document.getElementById("roll").disabled=false}
+
+function resetGame(){
+  pos=[0,0,0,0,0];
+  turn=0;
+  over=false;
+  document.getElementById("dice").textContent="⚀";
+  document.getElementById("turn").textContent="플레이어 1의 차례입니다!";
+  document.getElementById("log").innerHTML="게임을 시작하세요!";
+  btnEnable();
+  makeBoard();
+}
+
+makeBoard();
+</script>
+</body>
+</html>
