@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>그림자 도둑</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #2f3640; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: #353b48; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 400px; text-align: center; }
+        .shadow-screen { font-size: 3rem; margin: 20px 0; background: #718093; padding: 20px; border-radius: 8px; }
+        input[type=range] { width: 100%; margin: 15px 0; }
+        button { background: #e1b12c; color: #2f3640; font-weight: bold; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>👥 그림자 도둑</h2>
+        <p>빛의 각도를 조절해 벽의 그림자를 열쇠 모양으로 만드세요.</p>
+        <div class="shadow-screen" id="shadow">🗝️</div>
+        <p>광원 각도: <span id="angle">45</span>°</p>
+        <input type="range" id="range" min="0" max="90" value="45" oninput="updateAngle(this.value)">
+        <br>
+        <button onclick="checkShadow()">그림자 훔치기</button>
+        <p id="msg" style="margin-top: 15px;"></p>
+    </div>
+    <script>
+        function updateAngle(val) {
+            document.getElementById('angle').textContent = val;
+            const shadow = document.getElementById('shadow');
+            if(val >= 80 && val <= 85) {
+                shadow.textContent = "🗝️ (완벽한 열쇠 형태)";
+            } else {
+                shadow.textContent = "〰️ (일그러진 형태)";
+            }
+        }
+        function checkShadow() {
+            const val = document.getElementById('range').value;
+            const msg = document.getElementById('msg');
+            if(val >= 80 && val <= 85) {
+                msg.style.color = '#2ecc71';
+                msg.textContent = "성공! 문을 여는 그림자 열쇠를 획득했습니다.";
+            } else {
+                msg.style.color = '#e74c3c';
+                msg.textContent = "실패! 각도가 맞지 않아 그림자가 찌그러졌습니다.";
+            }
+        }
+    </script>
+</body>
+</html>

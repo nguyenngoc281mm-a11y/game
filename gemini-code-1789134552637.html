@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>무한한 대기실</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #2d3436; color: #dfe6e9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: #636e72; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 400px; text-align: center; }
+        .timer { font-size: 2.5rem; margin: 20px 0; font-weight: bold; color: #fdcb6e; }
+        button { background: #d63031; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 1rem; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>⏳ 무한한 대기실</h2>
+        <p>이 게임의 유일한 규칙: 화면을 나가지 말고 조용히 기다리세요.</p>
+        <div class="timer" id="timer">10초</div>
+        <p id="quote">"기다림은 현대 사회에서 가장 고귀한 예술이다."</p>
+        <button onclick="alert('참지 못하고 조작하셨군요! 대기실 실패.')">지루해서 나가기</button>
+    </div>
+    <script>
+        let timeLeft = 10;
+        const timerEl = document.getElementById('timer');
+        const interval = setInterval(() => {
+            timeLeft--;
+            timerEl.textContent = timeLeft + "초";
+            if(timeLeft <= 0) {
+                clearInterval(interval);
+                timerEl.textContent = "성공!";
+                document.getElementById('quote').textContent = "축하합니다! 당신은 진정한 '기다림의 철학자' 경지에 올랐습니다.";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

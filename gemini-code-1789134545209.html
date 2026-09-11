@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>타이포그래피 미로</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 400px; text-align: center; }
+        .word-box { font-size: 2rem; letter-spacing: 5px; margin: 20px 0; font-weight: bold; color: #20c997; }
+        input { padding: 10px; font-size: 1rem; width: 70%; border: 2px solid #ced4da; border-radius: 5px; text-align: center; }
+        button { padding: 10px 15px; font-size: 1rem; background: #20c997; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #12b886; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>🔤 타이포그래피 미로</h2>
+        <p>앞을 막고 있는 단어의 철자를 재조합하여 통로를 만드세요.</p>
+        <div class="word-box" id="target">WALL</div>
+        <p>힌트: 영어로 '길' 또는 '통로'를 뜻하는 4글자 단어</p>
+        <input type="text" id="user-input" placeholder="정답 입력 (알파벳 재조합)">
+        <br>
+        <button onclick="checkWord()">단어 변환하기</button>
+        <p id="result" style="font-weight: bold; color: #e03131;"></p>
+    </div>
+    <script>
+        function checkWord() {
+            const val = document.getElementById('user-input').value.trim().toUpperCase();
+            const res = document.getElementById('result');
+            const target = document.getElementById('target');
+            if(val === 'PATH' || val === 'DOOR') {
+                target.textContent = val;
+                target.style.color = '#339af0';
+                res.style.color = '#2b8a3e';
+                res.textContent = '성공! 벽이 통로로 열렸습니다!';
+            } else {
+                res.textContent = '올바른 철자의 단어가 아닙니다. 다시 시도하세요.';
+            }
+        }
+    </script>
+</body>
+</html>

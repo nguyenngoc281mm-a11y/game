@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>사과 나무의 변호사</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f3f4; color: #333; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 500px; text-align: center; }
+        .stat { font-size: 1.2rem; margin: 15px 0; font-weight: bold; color: #2c3e50; }
+        .scenario { font-size: 1.1rem; line-height: 1.6; margin: 20px 0; min-height: 80px; }
+        button { background: #3498db; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 6px; cursor: pointer; font-size: 1rem; width: 100%; }
+        button:hover { background: #2980b9; }
+        .eco { background: #27ae60; } .eco:hover { background: #219653; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>⚖️ 사과 나무의 변호사</h2>
+        <div class="stat">배심원 지지율: <span id="approval">50</span>%</div>
+        <div class="scenario" id="scenario-text">재판이 시작되었습니다. 첫 번째 쟁점: 고속도로 건설을 위해 300년 된 보호수를 베어야 합니다. 변호사의 첫 변론은?</div>
+        <div id="choices">
+            <button class="eco" onclick="choice(1)">자연의 역사적 가치와 생태계 파괴를 강력히 주장한다.</button>
+            <button onclick="choice(2)">우회로 건설 시 발생하는 경제적 손실과 세금 낭비를 지적한다.</button>
+        </div>
+    </div>
+    <script>
+        let approval = 50;
+        let step = 1;
+        function choice(type) {
+            const text = document.getElementById('scenario-text');
+            const appEl = document.getElementById('approval');
+            const choices = document.getElementById('choices');
+            
+            if(step === 1) {
+                if(type === 1) { approval += 15; text.textContent = "배심원들이 나무의 역사성에 감동했습니다! 다음 쟁점: 기업 측이 주민들에게 일자리 500개를 약속했습니다."; }
+                else { approval -= 10; text.textContent = "지루한 경제 논리는 시민들의 마음을 사로잡지 못했습니다. 다음 쟁점: 기업의 일자리 약속."; }
+                step = 2;
+            } else if(step === 2) {
+                if(type === 1) { approval += 20; text.textContent = "성공적인 변론! 최종 선고가 내려집니다."; }
+                else { approval -= 5; text.textContent = "기업의 공세에 변론이 다소 흔들렸습니다."; }
+                choices.innerHTML = "<h3>재판 결과: 승소율 " + approval + "%</h3><button onclick='location.reload()'>다시하기</button>";
+            }
+            appEl.textContent = approval;
+        }
+    </script>
+</body>
+</html>
